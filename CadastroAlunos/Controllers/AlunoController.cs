@@ -74,6 +74,7 @@ namespace CadastroAlunos.Controllers
             }
 
             var aluno = await _context.Aluno.FindAsync(id);
+            
             if (aluno == null)
             {
                 return NotFound();
