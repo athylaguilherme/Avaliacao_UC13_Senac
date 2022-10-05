@@ -7,25 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CadastroAlunos.Data;
 using CadastroAlunos.Models;
+using CadastroAlunos.Contratos;
 
 namespace CadastroAlunos.Controllers
 {
-    public class AlunoController : Controller
+    public class AlunosController : Controller
     {
-        private readonly CadastroAlunosContext _context;
+        private readonly IAlunoRepository _alunoRepository;
 
-        public AlunoController(CadastroAlunosContext context)
+        public AlunosController(IAlunoRepository alunoRepository)
         {
-            _context = context;
+            _alunoRepository = alunoRepository;
         }
 
         // GET: Aluno
-        public async Task<IActionResult> Index()
+       
+        public async Task<ActionResult<IEnumerable<Aluno>>> Index()
         {
-            return View(await _context.Aluno.ToListAsync());
+            return View(await _alunoRepository.GetAluno());
         }
 
         // GET: Aluno/Details/5
+        [HttpGet("{id}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +36,8 @@ namespace CadastroAlunos.Controllers
                 return NotFound();
             }
 
-            var aluno = await _context.Aluno
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var aluno = await _alunoRepository.GetAlunoById(id);
+
             if (aluno == null)
             {
                 return NotFound();
@@ -44,12 +47,50 @@ namespace CadastroAlunos.Controllers
         }
 
         // GET: Aluno/Create
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
+
+        // POST: Aluno/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult<Aluno>> Create(Aluno aluno)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _alunoRepository.AddAluno(aluno);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(aluno);
+        }
+
+        // GET: Alunos/Details/5
+        public async Task<IActionResult> Detailsx(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var aluno = await _alunoRepository.GetAlunoById(id);
+            if (aluno == null)
+            {
+                return NotFound();
+            }
+
+            return View(aluno);
+        }
+
+        // GET: Alunos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Aluno/Create
+        // POST: Alunos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -58,14 +99,14 @@ namespace CadastroAlunos.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(aluno);
-                await _context.SaveChangesAsync();
+                 _alunoRepository.AddAluno(aluno);
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(aluno);
         }
 
-        // GET: Aluno/Edit/5
+        // GET: Alunos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,7 +115,6 @@ namespace CadastroAlunos.Controllers
             }
 
             var aluno = await _context.Aluno.FindAsync(id);
-            
             if (aluno == null)
             {
                 return NotFound();
@@ -82,7 +122,7 @@ namespace CadastroAlunos.Controllers
             return View(aluno);
         }
 
-        // POST: Aluno/Edit/5
+        // POST: Alunos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -117,7 +157,7 @@ namespace CadastroAlunos.Controllers
             return View(aluno);
         }
 
-        // GET: Aluno/Delete/5
+        // GET: Alunos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,7 +175,7 @@ namespace CadastroAlunos.Controllers
             return View(aluno);
         }
 
-        // POST: Aluno/Delete/5
+        // POST: Alunos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -151,4 +191,4 @@ namespace CadastroAlunos.Controllers
             return _context.Aluno.Any(e => e.Id == id);
         }
     }
-}
+
