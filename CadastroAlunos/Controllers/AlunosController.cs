@@ -21,7 +21,7 @@ namespace CadastroAlunos.Controllers
         }
 
         // GET: Aluno
-       
+
         public async Task<ActionResult<IEnumerable<Aluno>>> Index()
         {
             return View(await _alunoRepository.GetAluno());
@@ -47,10 +47,10 @@ namespace CadastroAlunos.Controllers
         }
 
         // GET: Aluno/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         // POST: Aluno/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -68,7 +68,7 @@ namespace CadastroAlunos.Controllers
         }
 
         // GET: Alunos/Details/5
-        public async Task<IActionResult> Detailsx(int? id)
+        public async Task<IActionResult> Detalhes(int? id)
         {
             if (id == null)
             {
@@ -84,29 +84,9 @@ namespace CadastroAlunos.Controllers
             return View(aluno);
         }
 
-        // GET: Alunos/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
-        // POST: Alunos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Turma,Media")] Aluno aluno)
-        {
-            if (ModelState.IsValid)
-            {
-                 _alunoRepository.AddAluno(aluno);
-                
-                return RedirectToAction(nameof(Index));
-            }
-            return View(aluno);
-        }
 
-        // GET: Alunos/Edit/5
+        //GET: Alunos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -114,7 +94,7 @@ namespace CadastroAlunos.Controllers
                 return NotFound();
             }
 
-            var aluno = await _context.Aluno.FindAsync(id);
+            var aluno = await _alunoRepository.GetAlunoById(id);
             if (aluno == null)
             {
                 return NotFound();
@@ -138,19 +118,19 @@ namespace CadastroAlunos.Controllers
             {
                 try
                 {
-                    _context.Update(aluno);
-                    await _context.SaveChangesAsync();
+                    
+                    await _alunoRepository.UpdateAluno(id, aluno);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlunoExists(aluno.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //if (!AlunoExists(aluno.Id))
+                    //{
+                    //    return NotFound();
+                    //}
+                    //else
+                    //{
+                    //    throw;
+                    //}
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -165,8 +145,7 @@ namespace CadastroAlunos.Controllers
                 return NotFound();
             }
 
-            var aluno = await _context.Aluno
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var aluno = await _alunoRepository.GetAlunoById(id);
             if (aluno == null)
             {
                 return NotFound();
@@ -180,15 +159,17 @@ namespace CadastroAlunos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var aluno = await _context.Aluno.FindAsync(id);
-            _context.Aluno.Remove(aluno);
-            await _context.SaveChangesAsync();
+            var aluno = await _alunoRepository.GetAlunoById(id);
+            await _alunoRepository.DeleteAluno(aluno.Id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AlunoExists(int id)
-        {
-            return _context.Aluno.Any(e => e.Id == id);
-        }
+        //private bool AlunoExists(int id)
+        //{
+        //    var result = _alunoRepository.GetAlunoById(id);
+
+        //    return _context.Aluno.Any(e => e.Id == id);
+        //}
     }
+}
 
