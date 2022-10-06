@@ -33,7 +33,7 @@ namespace CadastroAlunos.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var aluno = await _alunoRepository.GetAlunoById(id);
@@ -61,6 +61,7 @@ namespace CadastroAlunos.Controllers
         {
             if (ModelState.IsValid)
             {
+            
                 var result = await _alunoRepository.AddAluno(aluno);
                 return RedirectToAction(nameof(Index));
             }

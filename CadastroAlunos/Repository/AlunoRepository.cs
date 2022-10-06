@@ -30,9 +30,13 @@ namespace CadastroAlunos.Repository
 
         public async Task<Aluno> AddAluno(Aluno aluno)
         {
-
-            _context.Aluno.Add(aluno);
-            await _context.SaveChangesAsync();
+            if (aluno.Media >= 0 && aluno.Media <= 10)
+            {
+                _context.Aluno.Add(aluno);
+                await _context.SaveChangesAsync();
+                return aluno;
+            }
+          
 
             return aluno;
         }
@@ -44,11 +48,15 @@ namespace CadastroAlunos.Repository
             if (aluno == null)
                 return 0;
 
-            aluno.AtualizarDados(alunoAlterado.Nome, alunoAlterado.Turma);
-            aluno.AtualizaMedia(alunoAlterado.Media);
+            if (alunoAlterado.Media >=0 && alunoAlterado.Media <= 10)
+            {
+                aluno.AtualizarDados(alunoAlterado.Nome, alunoAlterado.Turma);
+                aluno.AtualizaMedia(alunoAlterado.Media);
 
-            _context.Entry(aluno).State = EntityState.Modified;
-            return await _context.SaveChangesAsync();
+                _context.Entry(aluno).State = EntityState.Modified;
+                return await _context.SaveChangesAsync();
+            }
+            return 0;
         }
 
         public async Task DeleteAluno(int id)

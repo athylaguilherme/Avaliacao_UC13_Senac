@@ -53,8 +53,9 @@ namespace CadastroAlunosTest
 
             Aluno aluno = new Aluno();
             aluno.Media = 5;
+
             //Act
-            
+
             //Assert
             Assert.True(aluno.VerificaAprovacao());
         }
@@ -79,6 +80,7 @@ namespace CadastroAlunosTest
 
             Aluno aluno = new Aluno();
             aluno.Media = 4;
+
             //Act
             aluno.AtualizaMedia(10);
             //Assert
