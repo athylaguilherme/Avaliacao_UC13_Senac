@@ -35,7 +35,7 @@ namespace CadastroAlunosTest
         }
 
         [Fact]
-        public async void MetodoIndexDeveRetornarChamarUmaVezORepositorio()
+        public async void MetodoIndexChamarUmaVezORepositorio()
         {
             //Arrange
             var controller = new AlunosController(_alunoRepository.Object);
@@ -98,6 +98,60 @@ namespace CadastroAlunosTest
             Assert.IsType<ViewResult>(alunos);
 
         }
+        [Fact]
+        public async void MetodoDetailsChamarUmaVezORepositorio()
+        {
+            //Arrange
+            AlunosController controller = new AlunosController(_alunoRepository.Object);
+
+            Aluno aluno = new Aluno();
+            aluno.Id = 1;
+
+           var result = _alunoRepository.Setup(a => a.GetAlunoById(1))
+               .ReturnsAsync(aluno);
+
+            //Act
+            var alunos = await controller.Details(1);
+
+
+            //Assert
+            _alunoRepository.Verify(alunoRepo => alunoRepo.GetAlunoById(1), Times.Once);
+        }
+
+        [Fact]
+        public  void MetodoCreateDeveRetornarUmaViewResult()
+        {
+            //Arrange
+            AlunosController controller = new AlunosController(_alunoRepository.Object);
+
+            //Act
+            var aluno =  controller.Create();
+
+            //Assert
+            Assert.IsType<ViewResult>(aluno);
+
+        }
+
+        [Fact]
+        public async void MetodoCreateModelStateInvalidaReturnaView()
+        {
+            //Arrange
+            AlunosController controller = new AlunosController(_alunoRepository.Object);
+            Aluno aluno = new Aluno();
+            aluno.Id = -5;
+            aluno.Nome = null;
+            aluno.Turma = null;
+            aluno.Media = -15;
+            //Act
+            await controller.Create(aluno);
+
+            //Assert
+
+            _alunoRepository.Verify(alunoRepo => alunoRepo.AddAluno(aluno), Times.Once);
+        }
+
+
+
 
 
     }
