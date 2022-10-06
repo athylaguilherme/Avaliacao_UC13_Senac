@@ -133,7 +133,7 @@ namespace CadastroAlunosTest
         }
 
         [Fact]
-        public async void MetodoCreateModelStateInvalidaReturnaView()
+        public async void MetodoCreateVerificase_AlunoRepositoryFoiChamadoApenasUmavez_eSeForDoTipoRedirectToAction()
         {
             //Arrange
             AlunosController controller = new AlunosController(_alunoRepository.Object);
@@ -143,11 +143,12 @@ namespace CadastroAlunosTest
             aluno.Turma = null;
             aluno.Media = -15;
             //Act
-            await controller.Create(aluno);
-
+           var total = await controller.Create(aluno);
+            
             //Assert
 
             _alunoRepository.Verify(alunoRepo => alunoRepo.AddAluno(aluno), Times.Once);
+            Assert.IsType<RedirectToActionResult>(total.Result);
         }
 
 
