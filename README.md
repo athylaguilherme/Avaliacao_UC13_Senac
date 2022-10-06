@@ -3,7 +3,7 @@
 
 ##  Inconsistências da Model
 
-Metodo Verificar Aprovação da model está errado, pois ele da falso em pessoa com media 5, devido que no metodo está > 5, o correto seria >= 5.
+Metodo Verificar Aprovação da model está errado, pois ele da falso em pessoa com media 5, devido que no metodo Verifica Aprovação está > 5, o correto seria >= 5.
 
 A Models precisa também ter construtor para obrigar, o usuario passar os dados.
 
