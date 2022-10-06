@@ -164,9 +164,13 @@ namespace CadastroAlunos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //private bool AlunoExists(int id)
+        //private bool AlunoExists(int? id)
         //{
         //    var result = _alunoRepository.GetAlunoById(id);
+        //    if (result != null)
+        //    {
+        //        return result;
+        //    }
 
         //    return _context.Aluno.Any(e => e.Id == id);
         //}
